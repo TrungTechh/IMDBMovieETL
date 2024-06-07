@@ -1,4 +1,4 @@
 # IMDBMovieETL
 
 <img src="./img/architect.svg">
-<img src="./img/architect.png">
+<img src="./img/architecture.png">
