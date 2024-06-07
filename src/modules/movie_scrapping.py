@@ -1,6 +1,3 @@
-import azure.functions as func
-from azure.storage.filedatalake import DataLakeServiceClient
-
 import re
 from bs4 import BeautifulSoup
 # import numpy as np
@@ -9,35 +6,35 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait 
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+
+from typing import List
 
 from threading import Thread
-from concurrent.futures import ThreadPoolExecutor
-
-import requests
 import logging
-import time
 import json
-import os
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 
 
 def get_current_time_str():
+
     current_datetime = datetime.now()
     formatted_datetime = current_datetime.strftime("%d_%m_%Y_%H_%M")
     return formatted_datetime
 
 def get_start_and_end_date(url):
+    """Get the start_date and end_date from the url using regex
+    :param url: the url string
+    """
     match = re.search(r'release_date=(\d{4}-\d{2}-\d{2}),(\d{4}-\d{2}-\d{2})', url)
-
     start_date = match.group(1) 
     end_date = match.group(2) 
 
     return start_date, end_date
 
 def get_chrome_driver():
+    """Get the start_date and end_date from the url using regex
+    :param url: the url string
+    """
     logging.info("Initializing chrome driver")
 
     try:
@@ -57,6 +54,9 @@ def get_chrome_driver():
         logging.error("Error initializing Chrome driver")
 
 def generate_chrome_drivers(nchromes):
+    """Generate multiple chrome drivers for multi threads
+    :param nchromes: the number of chrome drivers to generate
+    """
     chrome_drivers = []
 
     for _ in range(nchromes):

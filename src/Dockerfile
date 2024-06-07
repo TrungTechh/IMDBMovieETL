@@ -4,7 +4,6 @@
 FROM mcr.microsoft.com/azure-functions/python:4-python3.11
 
 
-
 #=================================
 # Install Bash Command Line Tools
 #=================================
@@ -19,7 +18,6 @@ RUN apt-get update \
     libgconf-2-4 \
     xvfb \
   && rm -rf /var/lib/apt/lists/*
-
 
 
 #=================================
@@ -40,8 +38,6 @@ RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-ke
     apt-get -yqq update && \
     apt-get -yqq install google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
-
-
 
 
 #=======================================
