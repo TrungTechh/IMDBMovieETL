@@ -67,3 +67,25 @@ Transformed data in `silver` container is loaded into the PowerBI
 
 ## Setup and Installation
 
+### Install the Azure Functions Core Tools
+
+Following instruction [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp)
+
+### Create Azure Function local project
+
+```bash
+func init --worker-runtime python --docker -m V2
+```
+
+Once you run the command, your file structure will look something like
+<p align="center">
+<img src="./img/after_setup_func.png">
+</p>
+
+
+Create a Python virtual environment and activate it. I am using python3.11
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
