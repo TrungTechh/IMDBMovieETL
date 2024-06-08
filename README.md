@@ -6,7 +6,6 @@
 - [Technologies Used](#technologies-used)
 - [Data Sources](#data-sources)
 - [ETL Process](#etl-process)
-- [Data Storage](#data-storage)
 - [Data Analysis and Reporting](#data-analysis-and-reporting)
 - [Setup and Installation](#setup-and-installation)
 
