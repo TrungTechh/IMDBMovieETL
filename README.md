@@ -2,7 +2,6 @@
 
 ## Table of Contents
 - [Introduction](#introduction)
-- [Project Overview](#project-overview)
 - [Architecture](#architecture)
 - [Technologies Used](#technologies-used)
 - [Data Sources](#data-sources)
@@ -10,10 +9,6 @@
 - [Data Storage](#data-storage)
 - [Data Analysis and Reporting](#data-analysis-and-reporting)
 - [Setup and Installation](#setup-and-installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## Introduction
 As a passionate movie enthusiast and data engineer, I've always been fascinated by the stories behind the numbers in the film industry. Movies have the power to captivate, inspire, and move us, and I've often wondered what makes a movie successful. Is it the storyline, the cast, the director, or perhaps something less obvious? This curiosity has driven me to embark on this project to scrape IMDb movies and perform ETL (Extract, Transform, Load) processes for further analysis.
@@ -73,19 +68,93 @@ Following instruction [here](https://learn.microsoft.com/en-us/azure/azure-funct
 
 ### Create Azure Function local project
 
+Clone this project
 ```bash
-func init --worker-runtime python --docker -m V2
+git clone https://github.com/TrungTechh/IMDBMovieETL.git
 ```
-
-Once you run the command, your file structure will look something like
-<p align="center">
-<img src="./img/after_setup_func.png">
-</p>
-
 
 Create a Python virtual environment and activate it. I am using python3.11
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv 
+./.venv/Scripts/activate
 ```
 
+Install the dependencies by running pip instal
+
+```
+pip install -r requirements.txt
+```
+
+### Set up ADLS and ACR
+
+Create two containers named `bronze` and `silver` in your Azure Storage account
+
+<img src="./img/create_container.png">
+
+Create `.env` file to store these environment variables
+
+<img src="./img/env.png">
+
+- In your storage account portal, navigate to **Security + networking** > **Access keys** to get **CONNECTION_STRING** and **KEY**
+- After creating Azure Container Registry. Go to the newly created resource > **Access Keys**, and click the checkbox “Admin User” to allow logging in through username & password. Copy your ACR login server name, username, and password from here.
+
+### Testing in local
+
+Start the function app
+```bash
+func start
+```
+
+You’d see the following output
+
+<img src="./img/func_start_terminal.png">
+
+Paste the http://localhost:7071/api/MovieScrapping to your web browser or Postman. Pass the parameter if needed. It took me more than 8 hours to scrape all movies from *2023-01-01* to *2023-10-01* with 500 movies each month. 
+
+<img src="./img/result_after_scapping.PNG">
+
+Go to `bronze` container created previous before you will see our data store in multiple json files.
+
+### Deploying to ACR using Shell Script
+
+Run this file from terminal. Replace `image_name` with yours
+
+```
+./build_docker.sh
+```
+
+Wait for the process to complete. Once completed, head over to your ACR, and click Repositories. You’ll see your newly created repository over there.
+
+<img src="./img/ACR_repo.png">
+
+### Deploy to Azure Functions App
+
+From **azure portal** > **Function App** and choose **Container Apps environment**
+
+<img src="./img/create_functionapp.png">
+
+Fill in the necessary details. Navigate to **Deployment** header tag, in **Image type** click **Private**. Choose Container Image as the deployment method and other authentication information.
+
+<img src="./img/deployment_acr_create_step.png">
+
+Once created, head over to the Function App and copy the app url. Try hitting the page `FunctionAppBaseUrl`/api/MovieScrapping?start_date=2023-01-01&end_date=2023-01-15&nthreads=1&limit_each_month=1 and it should work.
+
+<img src="./img/funcapp_url.PNG">
+<img src="./img/result_app_trigger.PNG">
+
+### Set up Databricks
+
+Upload three notebook files in `/adb_notebook` folder: `bronze_process`, `silver_process` and `pipeline_function` to Azure Databricks workspace
+
+- `pipeline_function`: Determines all function need to implement pipeline
+- `bronze_process`: Use function in `pipeline_function` to read data in `bronze` container and store in delta format.
+- `silver_process`: Use function in `pipeline_function` to read delta table in `bronze` container and transform into `silver` container.
+
+Create task with notebook type as below. Change the value of parameter `trigger` to streaming type if you want.
+
+<img src="./img/task_azuredb.PNG">
+
+Do samething with `silver_process`. Finally, run the job.
+
+<img src="./img/run_job.PNG">
