@@ -16,16 +16,13 @@ from datetime import datetime, timedelta
 
 
 def get_current_time_str():
-    """
-    Get the current time in string type
-    """
+
     current_datetime = datetime.now()
     formatted_datetime = current_datetime.strftime("%d_%m_%Y_%H_%M")
     return formatted_datetime
 
 def get_start_and_end_date(url):
-    """
-    Get the start_date and end_date from the url using regex
+    """Get the start_date and end_date from the url using regex
     :param url: the url string
     """
     match = re.search(r'release_date=(\d{4}-\d{2}-\d{2}),(\d{4}-\d{2}-\d{2})', url)
@@ -35,8 +32,7 @@ def get_start_and_end_date(url):
     return start_date, end_date
 
 def get_chrome_driver():
-    """
-    Get the start_date and end_date from the url using regex
+    """Get the start_date and end_date from the url using regex
     :param url: the url string
     """
     logging.info("Initializing chrome driver")
@@ -70,11 +66,7 @@ def generate_chrome_drivers(nchromes):
     return chrome_drivers
 
 def get_page_movie_source(driver, href_url):
-    """
-    Get source html of a movie
-    :param driver: the selenium driver
-    :param href_url: url of the movie
-    """
+
     driver.get(href_url)
     WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-testid='shoveler-items-container']")))
     source = driver.page_source
@@ -82,11 +74,7 @@ def get_page_movie_source(driver, href_url):
     return source
 
 def scrape_movie(driver, movie_tag):
-    """
-    Scrape information of a movie base on its tag
-    :param driver: the selenium driver
-    :param movie_tag: the div tag of movie in landing page
-    """
+    
     try:
         # =================
         # = SET UP DRIVER =
@@ -212,9 +200,6 @@ def scrape_movie(driver, movie_tag):
         logging.info("An error occur when scape a movie", e)
     
 def scrape_movies_for_a_month(driver, url, limit_each_month, directory_client, num_movies_each_expanse=250):
-    """
-    Scrape information of all movies in a month
-    """
     logging.info(f"The process's scrapping {url}...")
     movies_of_this_month = []
     
@@ -249,11 +234,11 @@ def scrape_movies_for_a_month(driver, url, limit_each_month, directory_client, n
         
         page_source = driver.page_source
         soup = BeautifulSoup(page_source, "html.parser")
-
-        movie_div_list = soup.find_all('div', class_ = 'ipc-metadata-list-summary-item__c')
         
-        if limit_each_month < len(movie_div_list):
-            movie_div_list = movie_div_list[:limit_each_month-1]
+        if total_movies > limit_each_month:
+            movie_div_list = soup.find_all('div', class_ = 'ipc-metadata-list-summary-item__c')[:limit_each_month]
+        else:
+            movie_div_list = soup.find_all('div', class_ = 'ipc-metadata-list-summary-item__c')
 
         for movie_div in movie_div_list:
             movies_of_this_month.append(scrape_movie(driver, movie_div))
