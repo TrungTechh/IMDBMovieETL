@@ -6,7 +6,6 @@
 - [Technologies Used](#technologies-used)
 - [Data Sources](#data-sources)
 - [ETL Process](#etl-process)
-- [Data Storage](#data-storage)
 - [Data Analysis and Reporting](#data-analysis-and-reporting)
 - [Setup and Installation](#setup-and-installation)
 
@@ -45,9 +44,9 @@ Start by trigger HTTP Azure Function, the crawler scrapes all properties's infor
 
 2. **Transformation**:
 
-Run azure databricks notebook job to do following tasks: (1) create **Bronze Delta Table** for data in `bronze` container. (2) Transformed into `silver` container in **Silver Delta Table**.
+Run azure databricks notebook job to do following tasks: (1) create **Bronze Delta Table** for data in `bronze` container. (2) Transformed into `silver` container in **Silver Delta Table** format.
 <img src="./img/azure_databricks_job.png">
-*I lend my friend's free azure account so the cluster is not my name*
+*I lend my friend's free azure account so the cluster's name is not my name*
 
 3. **Loading**:
 
