@@ -61,9 +61,12 @@ Transformed data in `silver` container is loaded into the PowerBI
 
 ## Setup and Installation
 
-### Install the Azure Functions Core Tools
+### Prerequisites:
 
-Following instruction [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp)
+- **Docker**
+- **Azure function tool**
+- **Azure subscription**
+- **Postman**
 
 ### Create Azure Function local project
 
